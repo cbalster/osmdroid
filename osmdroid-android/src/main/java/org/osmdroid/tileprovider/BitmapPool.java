@@ -30,7 +30,7 @@ public class BitmapPool {
 
 	public void returnDrawableToPool(ReusableBitmapDrawable drawable) {
 		Bitmap b = drawable.tryRecycle();
-		if (b != null && b.isMutable())
+		if (b != null && b.isMutable() && b.getConfig() != null)
 			synchronized (mPool) {
 				mPool.addLast(b);
 			}
