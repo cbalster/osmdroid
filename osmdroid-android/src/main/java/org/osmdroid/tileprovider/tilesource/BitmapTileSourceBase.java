@@ -110,6 +110,10 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 	public Drawable getDrawable(final String aFilePath) throws LowMemoryException {
 		//Log.d(IMapView.LOGTAG, aFilePath + " attempting to load bitmap");
 		try {
+			File bmpA = new File(aFilePath);
+			if (bmpA.exists()) {
+				Log.d(IMapView.LOGTAG, aFilePath + " exists before decode.");
+			}
 			// default implementation will load the file as a bitmap and create
 			// a BitmapDrawable from it
 			BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
@@ -130,7 +134,7 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 				File bmp = new File(aFilePath);
 				if (bmp.exists()) {
 					// if we couldn't load it then it's invalid - delete it
-					Log.d(IMapView.LOGTAG, aFilePath + " is an invalid image file, deleting...");
+					Log.d(IMapView.LOGTAG, aFilePath + " is an invalid image file (size: " + bmp.length() + "), deleting...");
 					try {
 						new File(aFilePath).delete();
 					} catch (final Throwable e) {
