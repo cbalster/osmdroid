@@ -118,6 +118,12 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 			// a BitmapDrawable from it
 			BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 			BitmapPool.getInstance().applyReusableOptions(bitmapOptions);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Log.d(IMapView.LOGTAG, "inBitmap == null: " + (bitmapOptions.inBitmap == null));
+				if (bitmapOptions.inBitmap != null) {
+					Log.d(IMapView.LOGTAG, "inBitmap size: " + bitmapOptions.inBitmap.getWidth() + " / " + bitmapOptions.inBitmap.getHeight());
+				}
+			}
 			final Bitmap bitmap;
 			//fix for API 15 see https://github.com/osmdroid/osmdroid/issues/227
 			if (Build.VERSION.SDK_INT == Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
