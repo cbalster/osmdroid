@@ -121,6 +121,8 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 			else
 				bitmap = BitmapFactory.decodeFile(aFilePath, bitmapOptions);
 			if (bitmap != null) {
+				if (bitmap.getConfig()==null)
+					return new BitmapDrawable(bitmap);
 				return new ReusableBitmapDrawable(bitmap);
 			} else {
 				File bmp = new File(aFilePath);
