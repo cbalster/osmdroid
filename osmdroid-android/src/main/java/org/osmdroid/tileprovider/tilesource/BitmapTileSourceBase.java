@@ -121,8 +121,10 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 			else
 				bitmap = BitmapFactory.decodeFile(aFilePath, bitmapOptions);
 			if (bitmap != null) {
-				if (bitmap.getConfig()==null)
+				if (bitmap.getConfig()==null) {
+					Log.e(IMapView.LOGTAG, "getDrawable(): config is null");
 					return new BitmapDrawable(bitmap);
+				}
 				return new ReusableBitmapDrawable(bitmap);
 			} else {
 				File bmp = new File(aFilePath);
@@ -172,8 +174,10 @@ public abstract class BitmapTileSourceBase implements ITileSource {
 			BitmapPool.getInstance().applyReusableOptions(bitmapOptions);
 			final Bitmap bitmap = BitmapFactory.decodeStream(aFileInputStream, null, bitmapOptions);
 			if (bitmap != null) {
-				if (bitmap.getConfig()==null)
+				if (bitmap.getConfig()==null) {
+					Log.e(IMapView.LOGTAG, "getDrawable(): config is null");
 					return new BitmapDrawable(bitmap);
+				}
 				return new ReusableBitmapDrawable(bitmap);
 			}
 		} catch (final OutOfMemoryError e) {
