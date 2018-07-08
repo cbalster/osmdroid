@@ -30,6 +30,8 @@ public class MapTileApproximater extends MapTileModuleProviderBase {
     private final List<MapTileModuleProviderBase> mProviders = new ArrayList<>();
     private int minZoomLevel;
 
+    private final Object mLock = new Object();
+
     /**
      * @since 6.0.0
      */
@@ -144,10 +146,12 @@ public class MapTileApproximater extends MapTileModuleProviderBase {
      * @return
      */
     public Bitmap approximateTileFromLowerZoom(final long pMapTileIndex, final int pZoomDiff) {
-        for (final MapTileModuleProviderBase provider : mProviders) {
-            final Bitmap bitmap = approximateTileFromLowerZoom(provider, pMapTileIndex, pZoomDiff);
-            if (bitmap != null) {
-                return bitmap;
+        synchronized (mLock) {
+            for (final MapTileModuleProviderBase provider : mProviders) {
+                final Bitmap bitmap = approximateTileFromLowerZoom(provider, pMapTileIndex, pZoomDiff);
+                if (bitmap != null) {
+                    return bitmap;
+                }
             }
         }
         return null;
@@ -258,6 +262,8 @@ public class MapTileApproximater extends MapTileModuleProviderBase {
     @Override
     public void detach() {
         super.detach();
-        mProviders.clear();
+        synchronized (mLock) {
+            mProviders.clear();
+        }
     }
 }

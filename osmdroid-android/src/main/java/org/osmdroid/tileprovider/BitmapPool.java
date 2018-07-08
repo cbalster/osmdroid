@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
 
 import org.osmdroid.tileprovider.modules.ConfigurablePriorityThreadFactory;
 
@@ -30,10 +31,13 @@ public class BitmapPool {
 
 	public void returnDrawableToPool(ReusableBitmapDrawable drawable) {
 		Bitmap b = drawable.tryRecycle();
-		if (b != null && b.isMutable() && b.getConfig() != null)
+		if (b != null && b.isMutable() && !b.isRecycled() && b.getConfig() != null) {
 			synchronized (mPool) {
 				mPool.addLast(b);
 			}
+		} else if (b != null) {
+			Log.d("OMSDROID", "BitmapPool: Drawable rejected, getConfig == null:" + (b.getConfig() == null));
+		}
 	}
 
 	public void applyReusableOptions(final BitmapFactory.Options aBitmapOptions) {

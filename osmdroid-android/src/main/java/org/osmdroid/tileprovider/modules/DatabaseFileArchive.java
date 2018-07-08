@@ -72,6 +72,7 @@ public class DatabaseFileArchive implements IArchiveFile {
 
 	public byte[] getImage(final ITileSource pTileSource, final long pMapTileIndex) {
 
+		Cursor cur = null;
 		try {
 			byte[] bits=null;
 			final String[] tile = {COLUMN_TILE};
@@ -80,7 +81,6 @@ public class DatabaseFileArchive implements IArchiveFile {
 			final long z = MapTileIndex.getZoom(pMapTileIndex);
 			final long index = ((z << z) + x << z) + y;
 
-			Cursor cur;
 			if(!mIgnoreTileSource) {
 				cur = mDatabase.query(TABLE, tile, COLUMN_KEY+" = " + index + " and "
 				+ COLUMN_PROVIDER + " = ?", new String[]{pTileSource.name()}, null, null, null);
@@ -92,12 +92,16 @@ public class DatabaseFileArchive implements IArchiveFile {
 				cur.moveToFirst();
 				bits = (cur.getBlob(0));
 			}
-			cur.close();
+
 			if(bits != null) {
 				return bits;
 			}
 		} catch(final Throwable e) {
 			Log.w(IMapView.LOGTAG,"Error getting db stream: " + MapTileIndex.toString(pMapTileIndex), e);
+		} finally {
+			if (cur != null) {
+				cur.close();
+			}
 		}
 
 		return null;
